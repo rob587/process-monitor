@@ -18,3 +18,32 @@ async function getProcesses() {
 
   return topProcesses;
 }
+
+//funzione per implementare il display dei parametri della cpu e ram e la creazione di una tabella con ogni parametro deve mostrarmi
+
+async function displayMonitor() {
+  console.clear();
+
+  const cpu = await si.currentLoad();
+  const memory = await si.mem();
+
+  console.log(chalk.blue.bold("\n🖥️  SYSTEM MONITOR\n"));
+
+  console.log(chalk.yellow(`CPU Usage: ${cpu.currentLoad.toFixed(1)}%`));
+  console.log(
+    chalk.yellow(
+      `RAM Usage: ${((mem.used / mem.total) * 100).toFixed(1)}% (${(mem.used / 1024 / 1024 / 1024).toFixed(1)}GB / ${(mem.total / 1024 / 1024 / 1024).toFixed(1)}GB)`,
+    ),
+  );
+
+  const tabella = new Table({
+    head: [
+      chalk.cyan("PID"),
+      chalk.cyan("Name"),
+      chalk.cyan("Cpu %"),
+      chalk.cyan("Ram %"),
+      chalk.cyan("Ram (Mb)"),
+    ],
+    colWidths: [8, 30, 10, 10, 12],
+  });
+}
