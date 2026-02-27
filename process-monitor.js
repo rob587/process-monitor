@@ -46,4 +46,34 @@ async function displayMonitor() {
     ],
     colWidths: [8, 30, 10, 10, 12],
   });
+
+  const processes = await getProcesses();
+
+  processes.forEach((proc) => {
+    const ramMB = ((proc.mem * memInfo.total) / 100 / 1024 / 1024).toFixed(0);
+
+    // Colora in base al consumo
+    let cpuColor =
+      proc.cpu > 50 ? chalk.red : proc.cpu > 20 ? chalk.yellow : chalk.white;
+    let memColor =
+      proc.mem > 10 ? chalk.red : proc.mem > 5 ? chalk.yellow : chalk.white;
+
+    tabella.push([
+      proc.pid,
+      proc.name.substring(0, 28),
+      cpuColor(proc.cpu.toFixed(1)),
+      memColor(proc.mem.toFixed(1)),
+      ramMB,
+    ]);
+  });
+
+  console.log(tabella.toString());
+  console.log(
+    chalk.gray("\nAggiornamento ogni 3 secondi... Premi CTRL+C per uscire"),
+  );
 }
+
+console.log(chalk.green("🚀 Avvio Process Monitor...\n"));
+
+displayMonitor();
+setInterval(displayMonitor, 3000);
